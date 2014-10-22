@@ -20,30 +20,17 @@ get_filename_component (MIRRORED_BUILD_TARGETS_CMAKE_DIRECTORY
 set (CMAKE_UNIT_DIRECTORY
      ${MIRRORED_BUILD_TARGETS_CMAKE_DIRECTORY}/cmake-unit)
 
-set (MIRRORED_BUILD_TARGETS_INITIAL_CACHE_CONTENTS
-     "set (CMAKE_C_COMPILER\n"
-     "     ${CMAKE_C_COMPILER}\n"
-     "     CACHE STRING \"\" FORCE)\n"
-     "set (CMAKE_CXX_COMPILER\n"
-     "     ${CMAKE_CXX_COMPILER}\n"
-     "     CACHE STRING \"\" FORCE)\n")
 
 set (CMAKE_MODULE_PATH
      ${CMAKE_UNIT_DIRECTORY}
      ${MIRRORED_BUILD_TARGETS_CMAKE_DIRECTORY}
      ${CMAKE_MODULE_PATH})
 
-foreach (PATH ${CMAKE_MODULE_PATH})
-     set (MIRRORED_BUILD_TARGETS_INITIAL_CACHE_CONTENTS
-          "${MIRRORED_BUILD_TARGETS_INITIAL_CACHE_CONTENTS}\n"
-          "set (CMAKE_MODULE_PATH ${PATH} \${CMAKE_MODULE_PATH}\n"
-          "     CACHE STRING \"\" FORCE)\n")
-endforeach ()
-
 include (CMakeUnitRunner)
 
-bootstrap_cmake_unit (INITIAL_CACHE_CONTENTS
-                      MIRRORED_BUILD_TARGETS_INITIAL_CACHE_CONTENTS)
+bootstrap_cmake_unit (VARIABLES CMAKE_MODULE_PATH
+                                CMAKE_C_COMPILER
+                                CMAKE_CXX_COMPILER)
 
 add_cmake_test (MirroredBuildTargetsInheritSources)
 add_cmake_test (CreateMirroredExecutableWithSuffix)
