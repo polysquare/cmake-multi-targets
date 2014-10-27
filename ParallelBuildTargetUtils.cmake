@@ -132,38 +132,34 @@ function (psq_wire_mirrored_build_target_dependencies TARGET SUFFIX)
                   TARGET ${TARGET}
                   PROPERTY LINK_LIBRARIES)
 
-    if (TARGET_LIBRARIES)
+    foreach (LIBRARY ${TARGET_LIBRARIES})
 
-        foreach (LIBRARY ${TARGET_LIBRARIES})
+        # If LIBRARY is a target then it might also have a
+        # corresponding mirrored target, check for that too
+        if (TARGET ${LIBRARY})
 
-            # If LIBRARY is a target then it might also have a
-            # corresponding mirrored target, check for that too
-            if (TARGET ${LIBRARY})
+            set (LIBRARY_MIRRORED_TARGET ${LIBRARY}_${SUFFIX})
 
-                set (LIBRARY_MIRRORED_TARGET ${LIBRARY}_${SUFFIX})
+            if (TARGET ${LIBRARY_MIRRORED_TARGET})
 
-                if (TARGET ${LIBRARY_MIRRORED_TARGET})
+                target_link_libraries (${MIRRORED_TARGET}
+                                       ${LIBRARY_MIRRORED_TARGET})
 
-                    target_link_libraries (${MIRRORED_TARGET}
-                                           ${LIBRARY_MIRRORED_TARGET})
-
-                else (TARGET ${LIBRARY_MIRRORED_TARGET})
-
-                    target_link_libraries (${MIRRORED_TARGET}
-                                           ${LIBRARY})
-
-                endif (TARGET ${LIBRARY_MIRRORED_TARGET})
-
-            else (TARGET ${LIBRARY})
+            else (TARGET ${LIBRARY_MIRRORED_TARGET})
 
                 target_link_libraries (${MIRRORED_TARGET}
                                        ${LIBRARY})
 
-            endif (TARGET ${LIBRARY})
+            endif (TARGET ${LIBRARY_MIRRORED_TARGET})
 
-        endforeach ()
+        else (TARGET ${LIBRARY})
 
-    endif (TARGET_LIBRARIES)
+            target_link_libraries (${MIRRORED_TARGET}
+                                   ${LIBRARY})
+
+        endif (TARGET ${LIBRARY})
+
+    endforeach ()
 
 endfunction (psq_wire_mirrored_build_target_dependencies)
 
