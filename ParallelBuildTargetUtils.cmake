@@ -5,10 +5,9 @@
 #
 # psq_setup_mirrored_build_target takes a pre-existing TARGET and creates
 # a new "mirrored" build target with the suffix SUFFIX and
-# with CXX_FLAGS and C_FLAGS appended to the
-# already-set CMAKE_CXX_FLAGS and CMAKE_C_FLAGS. It will not set up any of
-# its dependencies or link libraries. EXCLUDE_FROM_ALL will be set on the
-# target.
+# with CXX_FLAGS and CFLAGS appended to the already-set CMAKE_CXX_FLAGS and
+# CMAKE_C_FLAGS. It will not set up any of its dependencies or link libraries.
+# EXCLUDE_FROM_ALL will be set on the target.
 #
 # psq_wire_mirrored_build_target_dependencies takes a pre-existing TARGET
 # and will, for a SUFFIX, find the created mirrored build target using that
@@ -16,14 +15,21 @@
 #
 # psq_create_mirrored_build_target will perform both of these steps together.
 #
-# See LICENCE.md for Copyright information
+# See /LICENCE.md for Copyright information
 
-set (CMAKE_MODULE_PATH
-     ${CMAKE_MODULE_PATH}
-     ${CMAKE_CURRENT_LIST_DIR}/tooling-cmake-util)
+if (NOT BIICODE)
+
+    set (CMAKE_MODULE_PATH
+         "${CMAKE_CURRENT_SOURCE_DIR}/bii/deps"
+         "${CMAKE_MODULE_PATH}")
+
+endif (NOT BIICODE)
+
+include ("smspillaz/cmake-include-guard/IncludeGuard")
+cmake_include_guard (SET_MODULE_PATH)
 
 include (CMakeParseArguments)
-include (PolysquareToolingUtil)
+include ("smspillaz/tooling-cmake-util/PolysquareToolingUtil")
 
 # psq_setup_mirrored_build_target:
 #
@@ -47,7 +53,6 @@ function (psq_setup_mirrored_build_target TARGET SUFFIX)
                            "${SETUP_MIRRORED_BUILD_TARGET_MULTIVAR_ARGS}"
                            ${ARGN})
 
-    
     set (MIRRORED_TARGET ${TARGET}_${SUFFIX})
 
     get_target_property (TARGET_TYPE ${TARGET} TYPE)
@@ -167,9 +172,9 @@ endfunction (psq_wire_mirrored_build_target_dependencies)
 #
 # Creates a mirrored build target for TARGET named TARGET_SUFFIX. The mirrored
 # build target will use the specified COMPILE_FLAGS and LINK_FLAGS and depend
-# on the orignal target's library dependencies (or mirrored library deps) with
-# the same SUFFIX. The dependencies in DEPENDS will be added to the mirrored
-# target
+# on the original target's library dependencies (or mirrored library
+# dependencies) with the same SUFFIX. The dependencies in DEPENDS will be added
+# to the mirrored target
 #
 # TARGET: Target to mirror
 # SUFFIX: Suffix to add to mirrored target
@@ -197,4 +202,3 @@ function (psq_create_mirrored_build_target TARGET SUFFIX)
                                                  ${WIRE_TARGET_FORWARD_OPTIONS})
 
 endfunction ()
- 
