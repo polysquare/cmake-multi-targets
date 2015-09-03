@@ -1,0 +1,13 @@
+AppVeyor
+Biicode
+CFLAGS
+CMake
+cmake
+CMAKE_CXX_FLAGS
+CMAKE_C_FLAGS
+cotire
+CXX_FLAGS
+EXCLUDE_FROM_ALL
+executable_suffix
+library_suffix
+TARGET_SUFFIX

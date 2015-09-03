@@ -1,25 +1,35 @@
 language: cpp
+sudo: false
+cache:
+  directories:
+  - container
 env:
-  - CMAKE_GENERATOR="Unix Makefiles"
-  - CMAKE_GENERATOR="Ninja"
-before_install:
-  - git submodule update --init --recursive
-  - sudo apt-add-repository -y ppa:kalakris/cmake
-  - sudo apt-add-repository -y ppa:saiarcot895/chromium-dev
-  - sudo apt-get update -qq
-  - sudo apt-get install --force-yes `cat DEPENDENCIES`
-  - cmake --version
-  # Workaround to get Ninja to display verbose output
-  - if [[ $CMAKE_GENERATOR == "Ninja" ]] ; then
-     echo -e '!#/bin/bash\n/usr/bin/ninja -v $@' > ninja;
-     chmod +x ninja;
-     export PATH=`pwd`:${PATH};
-    fi
+- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" DEPLOY="1"
+- CMAKE_GENERATOR="Ninja" CMAKE_VERSION="latest"
+- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="3.0"
+- CMAKE_GENERATOR="Ninja" CMAKE_VERSION="3.0"
+- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" COVERAGE="--use-cmake-coverage"
+install:
+- eval $(curl -LSs --retry 100 --connect-timeout 3 public-travis-scripts.polysquare.org/bootstrap.py
+  | python /dev/stdin -d container -s setup/bii/setup.py -e bash -p /dev/stdout --cmake-version
+  ${CMAKE_VERSION})
 script:
-  - mkdir -p test/build
-  - pushd test/build
-  - cmake .. -G "${CMAKE_GENERATOR}" &&
-    cmake --build `pwd` &&
-    ctest --output-on-failure &&
-    popd
-
+- polysquare_run check/bii/check.py ${COVERAGE} --cmake-namespace psq --generator
+  "${CMAKE_GENERATOR}" --block "smspillaz/cmake-multi-targets"
+before_cache:
+- polysquare_cleanup
+after_success:
+- polysquare_run coverage/bii/coverage.py
+before_deploy:
+- polysquare_run deploy/bii/deploy.py
+deploy:
+  provider: biicode
+  skip_cleanup: true
+  user:
+    secure: CpVRAelpMKrH+2NkbQQnZ/UMjbLL0gvX8DLYkaMHVHxlKImzkYlcCje7tBogd2hjZonJdfF8AIMwWOHmrGI+1UGHgTWU+DTTkAtIL2Otke/WC/0yLGRSsJhC88hs0OKW2BZg+97Q8PJVDeY3J7j8UcqAevyMzYozcwdOZ7kvHfE=
+  password:
+    secure: rNH/j8bxGHpbAxLsJE0HTBD50yyLD9mexTEL0Le+IXfRaiKqpzGfYowbAB2ZpBsuR4cfB+EJAGz13DfCr5DA9yXEDNMFzA056P+A2gDosrZE5p0VwQsdxi9IfGC0vLV/+cNVJlGo7DM0lTnTCIp8dY0K+Poc4d08xaF2p2KZSiU=
+  on:
+    repo: polysquare/cmake-multi-targets
+    branch: master
+    condition: ${DEPLOY} = 1
