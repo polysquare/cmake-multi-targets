@@ -339,4 +339,4 @@ if (BIICODE)
 
     add_bii_targets ()
 
-endif (BIICODE)
+endif ()
