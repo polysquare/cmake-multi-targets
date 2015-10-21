@@ -23,7 +23,7 @@ if (NOT BIICODE)
          "${CMAKE_CURRENT_SOURCE_DIR}/bii/deps"
          "${CMAKE_MODULE_PATH}")
 
-endif (NOT BIICODE)
+endif ()
 
 include ("smspillaz/cmake-include-guard/IncludeGuard")
 cmake_include_guard (SET_MODULE_PATH)
@@ -73,14 +73,14 @@ function (psq_setup_mirrored_build_target TARGET SUFFIX)
         add_executable (${MIRRORED_TARGET}
                         ${TARGET_SOURCES})
 
-    else (TARGET_TYPE MATCHES "^.*_LIBRARY")
+    else ()
 
         message (FATAL_ERROR "Mirroring targets of type: ${TARGET_TYPE} to "
                              "generate ${MIRRORED_TARGET} is not possible.\n"
                              "The only supported types are STATIC_LIBRARY, "
                              "SHARED_LIBRARY and EXECUTABLE")
 
-    endif (TARGET_TYPE MATCHES "^.*_LIBRARY")
+    endif ()
 
     set_property (TARGET ${MIRRORED_TARGET}
                   PROPERTY COMPILE_FLAGS
@@ -91,7 +91,7 @@ function (psq_setup_mirrored_build_target TARGET SUFFIX)
                   ${SETUP_MIRRORED_BUILD_TARGET_LINK_FLAGS}
                   APPEND)
 
-endfunction (psq_setup_mirrored_build_target)
+endfunction ()
 
 # psq_wire_mirrored_build_target_dependencies
 #
@@ -116,7 +116,7 @@ function (psq_wire_mirrored_build_target_dependencies TARGET SUFFIX)
                              "to use "
                              "psq_wire_mirrored_build_target_dependencies")
 
-    endif (NOT TARGET ${MIRRORED_TARGET})
+    endif ()
 
     set (WIRE_MIRRORED_MULTIVAR_ARGS DEPENDS)
 
@@ -131,7 +131,7 @@ function (psq_wire_mirrored_build_target_dependencies TARGET SUFFIX)
         add_dependencies (${MIRRORED_TARGET}
                           ${WIRE_MIRRORED_DEPENDS})
 
-    endif (WIRE_MIRRORED_DEPENDS)
+    endif ()
 
     get_property (TARGET_LIBRARIES
                   TARGET ${TARGET}
@@ -150,23 +150,23 @@ function (psq_wire_mirrored_build_target_dependencies TARGET SUFFIX)
                 target_link_libraries (${MIRRORED_TARGET}
                                        ${LIBRARY_MIRRORED_TARGET})
 
-            else (TARGET ${LIBRARY_MIRRORED_TARGET})
+            else ()
 
                 target_link_libraries (${MIRRORED_TARGET}
                                        ${LIBRARY})
 
-            endif (TARGET ${LIBRARY_MIRRORED_TARGET})
+            endif ()
 
-        else (TARGET ${LIBRARY})
+        else ()
 
             target_link_libraries (${MIRRORED_TARGET}
                                    ${LIBRARY})
 
-        endif (TARGET ${LIBRARY})
+        endif ()
 
     endforeach ()
 
-endfunction (psq_wire_mirrored_build_target_dependencies)
+endfunction ()
 
 # psq_create_mirrored_build_target:
 #
