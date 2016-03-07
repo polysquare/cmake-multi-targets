@@ -16,20 +16,11 @@
 # psq_create_mirrored_build_target will perform both of these steps together.
 #
 # See /LICENCE.md for Copyright information
-
-if (NOT BIICODE)
-
-    set (CMAKE_MODULE_PATH
-         "${CMAKE_CURRENT_SOURCE_DIR}/bii/deps"
-         "${CMAKE_MODULE_PATH}")
-
-endif ()
-
-include ("smspillaz/cmake-include-guard/IncludeGuard")
+include ("cmake/cmake-include-guard/IncludeGuard")
 cmake_include_guard (SET_MODULE_PATH)
 
 include (CMakeParseArguments)
-include ("smspillaz/tooling-cmake-util/PolysquareToolingUtil")
+include ("cmake/tooling-cmake-util/PolysquareToolingUtil")
 
 # psq_setup_mirrored_build_target:
 #
