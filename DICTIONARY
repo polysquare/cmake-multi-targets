@@ -10,4 +10,5 @@ CXX_FLAGS
 EXCLUDE_FROM_ALL
 executable_suffix
 library_suffix
+POLYSQUARE
 TARGET_SUFFIX

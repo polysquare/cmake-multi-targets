@@ -12,8 +12,7 @@ set (CMAKE_MODULE_PATH
 
 cmake_minimum_required (VERSION 2.8)
 
-include ("cmake/cmake-unit/CMakeUnitRunner")
-include ("cmake/cmake-unit/CMakeUnit")
+include ("cmake/cmake-module-common/Common" OPTIONAL)
 include (ParallelBuildTargetUtils)
 
 # Checks that when we mirror an executable, a new executable called
@@ -318,12 +317,17 @@ function (psq_test_mirrored_build_targets_inherit_target_link_libraries)
                                VERIFY COMMAND psq_verify)
 endfunction ()
 
-cmake_unit_init (NAMESPACE psq
-                 COVERAGE_FILES
-                 "${CMAKE_CURRENT_LIST_DIR}/ParallelBuildTargetUtils.cmake")
+set (CMAKE_FILES
+     "${CMAKE_CURRENT_LIST_DIR}/ParallelBuildTargetUtils.cmake"
+     "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
+set (MARKDOWN_FILES
+     "${CMAKE_CURRENT_LIST_DIR}/LICENCE.md"
+     "${CMAKE_CURRENT_LIST_DIR}/README.md")
 
-if (BIICODE)
+if (COMMAND cmake_module_add_common_targets)
 
-    add_bii_targets ()
+    cmake_module_add_common_targets (NAMESPACE "psq"
+                                     CMAKE_FILES ${CMAKE_FILES}
+                                     DOCUMENTATION_FILES ${MARKDOWN_FILES})
 
 endif ()
